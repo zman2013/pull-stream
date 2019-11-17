@@ -11,13 +11,16 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
 
     private IDuplexCallback callback;
 
+    public DefaultDuplex(){
+        this(new DefaultStreamBuffer<>(), new IDuplexCallback<T>() {});
+    }
+
     /**
      * 创建一个source，建议使用{@link DefaultSource}
      * @param callback 回调方法
      */
     public DefaultDuplex(IDuplexCallback<T> callback){
-        super.callback = callback;
-        this.callback = callback;
+        this(new DefaultStreamBuffer<>(), callback);
     }
 
     /**
@@ -71,5 +74,13 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
         }
     }
 
+    /**
+     * 向缓存中添加数据，duplex暴露此接口，可以让使用方更方便，不需要与buffer进行交互。
+     * @param data  一条数据
+     * @return 成功、失败
+     */
+    public boolean push(T data){
+        return buffer.offer(data);
+    }
 
 }
