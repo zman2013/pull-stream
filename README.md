@@ -6,14 +6,14 @@ https://pull-stream.github.io/
 ### Setting up the dependency
 * Gradle
 ```groovy
-implementation "com.zmannotes.stream:pull-stream:0.0.5"
+implementation "com.zmannotes.stream:pull-stream:0.0.8"
 ```
 * Maven
 ```xml
 <dependency>
     <groupId>com.zmannotes.stream</groupId>
     <artifactId>pull-stream</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.8</version>
 </dependency>
 ```
 ### Hello World
@@ -43,6 +43,25 @@ Pull-stream features several base interfaces you can discover operators on:
  - [`com.zman.pull.stream.IDuplex`](https://github.com/zman2013/pull-stream/blob/master/src/main/java/com/zman/pull/stream/IDuplex.java): A Duplex is a stream that is both readable and writable.
  
 ### Example
+#### support lambda
+```java
+public class DuplexExample {
+    
+    private IDuplex duplex;
+    
+    public DuplexExample(){
+        duplex = new DefaultDuplex(this::onData, this::onClose, this::onError);
+    }
+    
+    // 消费数据
+    private void onData(Object data){}
+    // 流关闭时回调
+    private void onClose(){}
+    // 流异常时回调
+    private void onError(Object e){}
+    
+}
+```
 #### duplex
 ```java
 Holder<Integer> holderA = new Holder<>(0);
