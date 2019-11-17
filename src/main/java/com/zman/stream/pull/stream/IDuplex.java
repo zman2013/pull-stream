@@ -2,7 +2,7 @@ package com.zman.stream.pull.stream;
 
 /**
  * A duplex is a stream that is readable and writable.
- * @param <T>
+ * @param <T> 数据类型
  */
 public interface IDuplex<T> extends ISink<T>, ISource<T> {
 

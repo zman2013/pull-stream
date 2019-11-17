@@ -15,7 +15,7 @@ public interface ISink<T> {
     void read(ISource<T> source);
 
     /**
-     * 当sink收到waiting之后，当Source再次有了数据后会调用sink的{@link ISink<T>.notifyAvailable}方法进行通知
+     * 当sink收到waiting之后，当Source再次有了数据后会调用sink的{@link #notifyAvailable}方法进行通知
      * sink收到callback后，可以立刻读取数据
      */
     void notifyAvailable();
