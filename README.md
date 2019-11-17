@@ -6,14 +6,14 @@ https://pull-stream.github.io/
 ### Setting up the dependency
 * Gradle
 ```groovy
-implementation "com.zmannotes.stream:pull-stream:0.0.4"
+implementation "com.zmannotes.stream:pull-stream:0.0.5"
 ```
 * Maven
 ```xml
 <dependency>
     <groupId>com.zmannotes.stream</groupId>
     <artifactId>pull-stream</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 </dependency>
 ```
 ### Hello World
@@ -37,10 +37,10 @@ public static void main(String[] args){
 ```
 ### Base classes
 Pull-stream features several base interfaces you can discover operators on:  
- - [`com.zman.pull.stream.ISource`](): A Source is a stream that is not writable.
- - [`com.zman.pull.stream.IThrough`](): A Through is a stream that both reads and is read by another stream.
- - [`com.zman.pull.stream.ISink`](): A Sink is a stream that is not readable.
- - [`com.zman.pull.stream.IDuplex`](): A Duplex is a stream that is both readable and writable.
+ - [`com.zman.pull.stream.ISource`](https://github.com/zman2013/pull-stream/blob/master/src/main/java/com/zman/pull/stream/ISource.java): A Source is a stream that is not writable.
+ - [`com.zman.pull.stream.IThrough`](https://github.com/zman2013/pull-stream/blob/master/src/main/java/com/zman/pull/stream/IThrough.java): A Through is a stream that both reads and is read by another stream.
+ - [`com.zman.pull.stream.ISink`](https://github.com/zman2013/pull-stream/blob/master/src/main/java/com/zman/pull/stream/ISink.java): A Sink is a stream that is not readable.
+ - [`com.zman.pull.stream.IDuplex`](https://github.com/zman2013/pull-stream/blob/master/src/main/java/com/zman/pull/stream/IDuplex.java): A Duplex is a stream that is both readable and writable.
  
 ### Example
 #### duplex
