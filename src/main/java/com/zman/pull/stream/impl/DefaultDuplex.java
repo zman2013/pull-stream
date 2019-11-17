@@ -1,7 +1,7 @@
-package com.zman.stream.pull.stream.impl;
+package com.zman.pull.stream.impl;
 
-import com.zman.stream.pull.stream.*;
-import com.zman.stream.pull.stream.bean.ReadResult;
+import com.zman.pull.stream.*;
+import com.zman.pull.stream.bean.ReadResult;
 
 public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
 
@@ -12,7 +12,7 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
     private IDuplexCallback callback;
 
     /**
-     * 创建一个source，建议使用{@link com.zman.stream.pull.stream.impl.DefaultSource}
+     * 创建一个source，建议使用{@link DefaultSource}
      * @param callback 回调方法
      */
     public DefaultDuplex(IDuplexCallback<T> callback){
@@ -21,7 +21,7 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
     }
 
     /**
-     * 创建一个sink，建议使用{@link com.zman.stream.pull.stream.impl.DefaultSink}
+     * 创建一个sink，建议使用{@link DefaultSink}
      * @param buffer 缓冲区
      */
     public DefaultDuplex(IStreamBuffer<T> buffer){
@@ -51,7 +51,7 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
      * 返回一条数据
      *
      * @param end  控制source是否结束数据的生产
-     * @param sink <code>ISink</code>的引用，当{@link com.zman.stream.pull.stream.ISource}没有数据可以提供时会保存sink的引用
+     * @param sink <code>ISink</code>的引用，当{@link ISource}没有数据可以提供时会保存sink的引用
      * @return 本次读取数据的结果：Available 获取到数据，Waiting 等待回调，End 结束
      */
     @Override

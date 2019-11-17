@@ -1,8 +1,8 @@
-package com.zman.stream.pull.stream.impl;
+package com.zman.pull.stream.impl;
 
 
 import com.zman.event.EventEmitter;
-import com.zman.stream.pull.stream.IStreamBuffer;
+import com.zman.pull.stream.IStreamBuffer;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

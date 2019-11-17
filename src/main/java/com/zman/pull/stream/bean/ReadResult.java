@@ -1,4 +1,4 @@
-package com.zman.stream.pull.stream.bean;
+package com.zman.pull.stream.bean;
 
 
 public class ReadResult<T> {

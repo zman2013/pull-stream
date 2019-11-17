@@ -1,7 +1,7 @@
-package com.zman.stream.pull.stream;
+package com.zman.pull.stream;
 
-import com.zman.stream.pull.stream.impl.*;
-import com.zman.stream.pull.stream.util.Pull;
+import com.zman.pull.stream.impl.*;
+import com.zman.pull.stream.util.Pull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

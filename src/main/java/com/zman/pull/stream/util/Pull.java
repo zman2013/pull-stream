@@ -1,9 +1,9 @@
-package com.zman.stream.pull.stream.util;
+package com.zman.pull.stream.util;
 
-import com.zman.stream.pull.stream.IDuplex;
-import com.zman.stream.pull.stream.ISink;
-import com.zman.stream.pull.stream.ISource;
-import com.zman.stream.pull.stream.IThrough;
+import com.zman.pull.stream.ISink;
+import com.zman.pull.stream.IDuplex;
+import com.zman.pull.stream.ISource;
+import com.zman.pull.stream.IThrough;
 
 public class Pull {
 

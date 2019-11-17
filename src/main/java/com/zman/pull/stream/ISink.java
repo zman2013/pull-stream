@@ -1,4 +1,4 @@
-package com.zman.stream.pull.stream;
+package com.zman.pull.stream;
 
 /**
  * A sink is a stream that is not readable.

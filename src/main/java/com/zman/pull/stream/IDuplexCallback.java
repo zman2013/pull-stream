@@ -1,4 +1,4 @@
-package com.zman.stream.pull.stream;
+package com.zman.pull.stream;
 
 public interface IDuplexCallback<T> extends ISourceCallback, ISinkCallback<T> {
 

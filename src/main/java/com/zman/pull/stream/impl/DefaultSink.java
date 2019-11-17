@@ -1,10 +1,10 @@
-package com.zman.stream.pull.stream.impl;
+package com.zman.pull.stream.impl;
 
 
-import com.zman.stream.pull.stream.ISink;
-import com.zman.stream.pull.stream.ISinkCallback;
-import com.zman.stream.pull.stream.ISource;
-import com.zman.stream.pull.stream.bean.ReadResult;
+import com.zman.pull.stream.ISink;
+import com.zman.pull.stream.ISource;
+import com.zman.pull.stream.ISinkCallback;
+import com.zman.pull.stream.bean.ReadResult;
 
 public class DefaultSink<T> implements ISink<T> {
 

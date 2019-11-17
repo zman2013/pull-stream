@@ -1,6 +1,6 @@
-package com.zman.stream.pull.stream;
+package com.zman.pull.stream;
 
-import com.zman.stream.pull.stream.bean.ReadResult;
+import com.zman.pull.stream.bean.ReadResult;
 
 /**
  * A source is a stream that is not writable.

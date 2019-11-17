@@ -1,13 +1,13 @@
-import com.zman.stream.pull.stream.ISink;
-import com.zman.stream.pull.stream.ISource;
-import com.zman.stream.pull.stream.IThrough;
-import com.zman.stream.pull.stream.impl.DefaultSink;
-import com.zman.stream.pull.stream.impl.DefaultSource;
-import com.zman.stream.pull.stream.impl.DefaultThrough;
+import com.zman.pull.stream.ISink;
+import com.zman.pull.stream.ISource;
+import com.zman.pull.stream.IThrough;
+import com.zman.pull.stream.impl.DefaultSink;
+import com.zman.pull.stream.impl.DefaultSource;
+import com.zman.pull.stream.impl.DefaultThrough;
 
 import java.util.Random;
 
-import static com.zman.stream.pull.stream.util.Pull.pull;
+import static com.zman.pull.stream.util.Pull.pull;
 
 public class Example {
 

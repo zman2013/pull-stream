@@ -1,4 +1,4 @@
-package com.zman.stream.pull.stream;
+package com.zman.pull.stream;
 
 /**
  * Sink从Source读取数据可能获得以下四个状态，分别回调业务方不同的回调方法：

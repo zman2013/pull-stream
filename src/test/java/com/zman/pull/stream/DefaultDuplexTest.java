@@ -1,13 +1,13 @@
-package com.zman.stream.pull.stream;
+package com.zman.pull.stream;
 
-import com.zman.stream.pull.stream.impl.DefaultDuplex;
-import com.zman.stream.pull.stream.impl.DefaultStreamBuffer;
+import com.zman.pull.stream.impl.DefaultDuplex;
+import com.zman.pull.stream.impl.DefaultStreamBuffer;
+import com.zman.pull.stream.util.Pull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.zman.stream.pull.stream.util.Pull.pull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -24,7 +24,7 @@ public class DefaultDuplexTest {
         IDuplex<Integer> sink = new DefaultDuplex<>(duplexCallback);
         buffer.offer(1);
 
-        pull(source, sink);
+        Pull.pull(source, sink);
 
         buffer.offer(2);
         source.close();
@@ -44,7 +44,7 @@ public class DefaultDuplexTest {
         IDuplex<Integer> sink = new DefaultDuplex<>(duplexCallback);
         buffer.offer(1);
 
-        pull(source, sink);
+        Pull.pull(source, sink);
 
         buffer.offer(2);
         source.close();
@@ -64,7 +64,7 @@ public class DefaultDuplexTest {
         IDuplex<Integer> sink = new DefaultDuplex<>(duplexCallback);
         buffer.offer(1);
 
-        pull(source, sink);
+        Pull.pull(source, sink);
 
         buffer.offer(2);
         sink.close();

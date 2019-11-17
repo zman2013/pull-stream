@@ -1,8 +1,11 @@
-package com.zman.stream.pull.stream.impl;
+package com.zman.pull.stream.impl;
 
 
-import com.zman.stream.pull.stream.*;
-import com.zman.stream.pull.stream.bean.ReadResult;
+import com.zman.pull.stream.ISink;
+import com.zman.pull.stream.ISource;
+import com.zman.pull.stream.ISourceCallback;
+import com.zman.pull.stream.IStreamBuffer;
+import com.zman.pull.stream.bean.ReadResult;
 
 public class DefaultSource<T> implements ISource<T> {
 

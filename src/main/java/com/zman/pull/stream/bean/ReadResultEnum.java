@@ -1,4 +1,4 @@
-package com.zman.stream.pull.stream.bean;
+package com.zman.pull.stream.bean;
 
 /**
  * Sink从Source读取数据，Source返回的状态

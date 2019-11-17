@@ -1,4 +1,4 @@
-package com.zman.stream.pull.stream;
+package com.zman.pull.stream;
 
 /**
  * A Through is a stream that both reads and is read by another stream.

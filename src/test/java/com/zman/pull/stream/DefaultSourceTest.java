@@ -1,9 +1,8 @@
-package com.zman.stream.pull.stream;
+package com.zman.pull.stream;
 
-import com.zman.stream.pull.stream.impl.DefaultSink;
-import com.zman.stream.pull.stream.impl.DefaultSource;
-import com.zman.stream.pull.stream.impl.DefaultStreamBuffer;
-import com.zman.stream.pull.stream.impl.DefaultThrough;
+import com.zman.pull.stream.impl.DefaultSink;
+import com.zman.pull.stream.impl.DefaultSource;
+import com.zman.pull.stream.impl.DefaultStreamBuffer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
