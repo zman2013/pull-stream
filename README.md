@@ -1,3 +1,7 @@
+[![Travis Build](https://api.travis-ci.org/zman2013/pull-stream.svg?branch=master)](https://api.travis-ci.org/zman2013/pull-stream.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/zman2013/pull-stream/badge.svg?branch=master)](https://coveralls.io/github/zman2013/pull-stream?branch=master)
+
+
 # pull-stream
 A java implementation of the pull-stream while resolved the error propagation and the non-blocking back-pressure.
 https://pull-stream.github.io/
