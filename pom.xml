@@ -4,7 +4,7 @@
 
     <groupId>com.zman.stream</groupId>
     <artifactId>pull-stream</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <name>java pull-stream</name>
     <description>Pull-stream implementation in java.</description>
@@ -183,7 +183,7 @@
         <connection>scm:git:git@github.com:zman2013/pull-stream.git</connection>
         <developerConnection>scm:git:git@github.com:zman2013/pull-stream.git</developerConnection>
         <url>https://github.com/zman2013/pull-stream</url>
-        <tag>pull-stream-0.0.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
