@@ -1,17 +1,22 @@
 package com.zman.stream.pull.stream.impl;
 
-import com.zman.scuttlebutt.pull.stream.ISink;
-import com.zman.scuttlebutt.pull.stream.ISinkCallback;
-import com.zman.scuttlebutt.pull.stream.ISource;
-import com.zman.scuttlebutt.pull.stream.ReadResult;
+
+import com.zman.stream.pull.stream.ISink;
+import com.zman.stream.pull.stream.ISinkCallback;
+import com.zman.stream.pull.stream.ISource;
+import com.zman.stream.pull.stream.bean.ReadResult;
 
 public class DefaultSink<T> implements ISink<T> {
 
-    private boolean running = true;
+    protected boolean closed;
 
-    private ISinkCallback<T> callback;
+    protected ISinkCallback<T> callback;
 
     private ISource<T> source;
+
+    public DefaultSink(){
+        callback = data -> {};
+    }
 
     public DefaultSink(ISinkCallback<T> callback){
         this.callback = callback;
@@ -26,7 +31,7 @@ public class DefaultSink<T> implements ISink<T> {
             boolean notifySourceEnd = false;
 
             // 如果该sink已经停止了，通知source
-            if( !running){
+            if( closed){
                 notifySourceEnd = true;
                 stop = true;
             }
@@ -39,14 +44,18 @@ public class DefaultSink<T> implements ISink<T> {
                     break;
                 case Waiting:
                     stop = true;
-                    callback.waiting();
+                    callback.onWait();
                     break;
                 case Exception:
                     callback.onError(readResult.throwable);
+                    stop = true;
+                    closed = true;
                     break;
                 case End:
-                    callback.onComplete();
+                    callback.onClosed();
                     stop = true;
+                    closed = true;
+                    source = null;
             }
         }
     }
@@ -61,8 +70,12 @@ public class DefaultSink<T> implements ISink<T> {
     }
 
     @Override
-    public void stop() {
-        running = false;
+    public void close() {
+        closed = true;
+        // 停止后主动通知source端sink停止读取数据了
+        if( source != null ) {
+            this.read(source);
+        }
     }
 
 }

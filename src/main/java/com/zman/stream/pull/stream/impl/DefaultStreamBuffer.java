@@ -1,9 +1,11 @@
 package com.zman.stream.pull.stream.impl;
 
-import com.zman.scuttlebutt.EventEmitter;
-import com.zman.scuttlebutt.pull.stream.IStreamBuffer;
+
+import com.zman.event.EventEmitter;
+import com.zman.stream.pull.stream.IStreamBuffer;
 
 import java.util.concurrent.ArrayBlockingQueue;
+
 
 public class DefaultStreamBuffer<T> extends EventEmitter implements IStreamBuffer<T> {
 
@@ -24,4 +26,5 @@ public class DefaultStreamBuffer<T> extends EventEmitter implements IStreamBuffe
     public T poll() {
         return buffer.poll();
     }
+
 }

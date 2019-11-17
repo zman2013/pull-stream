@@ -1,7 +1,7 @@
 package com.zman.stream.pull.stream;
 
 /**
- * A DefaultSink is a stream that is not readable.
+ * A sink is a stream that is not readable.
  * You must have a sink at the end of a pipeline for data to move towards.
  *
  * -- pull-stream
@@ -21,9 +21,8 @@ public interface ISink<T> {
     void notifyAvailable();
 
     /**
-     * 停止从source读取数据，并且通知source。
-     * 之后无法继续读取，应当销毁stream
+     * 关闭流
      */
-    default void stop(){}
+    default void close(){}
 
 }

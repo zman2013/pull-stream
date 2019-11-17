@@ -19,17 +19,17 @@ public interface ISinkCallback<T> {
     /**
      * source暂无数据，有了数据会主动通知Sink来pull
      */
-    default void waiting(){}
+    default void onWait(){}
 
     /**
-     * Source已经停止生产数据，以后也不会有数据产生了
+     * 流已关闭，Source停止生产数据，以后也不会有数据产生了
      */
-    void onComplete();
+    default void onClosed(){System.out.println("stream closed");}
 
     /**
      * Source出现了异常
      * @param throwable 异常
      */
-    void onError(Throwable throwable);
+    default void onError(Throwable throwable){throwable.printStackTrace();}
 
 }

@@ -1,0 +1,41 @@
+package com.zman.stream.pull.stream;
+
+import com.zman.stream.pull.stream.bean.ReadResult;
+import com.zman.stream.pull.stream.bean.ReadResultEnum;
+import com.zman.stream.pull.stream.impl.DefaultSink;
+import com.zman.stream.pull.stream.impl.DefaultThrough;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
+public class DefaultThroughTest {
+
+    @Mock
+    ISinkCallback<Integer> callback;
+    @Mock
+    ISource<Integer> source;
+
+    @Test
+    public void read(){
+        IThrough<Integer> through = new DefaultThrough<>(d-> d*10);
+        ISink<Integer> sink = new DefaultSink<>(callback);
+
+        when(source.produce(false, sink))
+                .thenReturn(new ReadResult<>(ReadResultEnum.Available,1))
+                .thenReturn(new ReadResult<>(ReadResultEnum.Available,2))
+                .thenReturn(ReadResult.Completed);
+
+        sink.read(through.through(source));
+
+        // 验证
+        verify(callback, times(1)).onNext(10);
+        verify(callback, times(1)).onNext(20);
+        verify(callback, times(1)).onClosed();
+    }
+
+
+}

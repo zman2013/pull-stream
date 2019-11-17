@@ -3,7 +3,7 @@ package com.zman.stream.pull.stream;
 import java.util.function.Consumer;
 
 /**
- * 作为<code>ISource</code>的数据发生源
+ * <code>ISource</code>的数据缓存
  * @param <T> 数据类型
  */
 public interface IStreamBuffer<T> {
@@ -13,7 +13,7 @@ public interface IStreamBuffer<T> {
      * @param data 数据
      * @return 成功、失败
      */
-    boolean offer(T data);
+    default boolean offer(T data){return true;}
 
     /**
      * 从buffer中获取一条数据
@@ -27,7 +27,7 @@ public interface IStreamBuffer<T> {
      * @param event     事件
      * @param consumer  订阅方
      */
-    void on(String event, Consumer consumer);
+    default void on(Object event, Consumer consumer){}
 
 
 }

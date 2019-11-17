@@ -1,10 +1,25 @@
 package com.zman.stream.pull.stream.impl;
 
-import com.zman.scuttlebutt.pull.stream.*;
+
+import com.zman.stream.pull.stream.*;
+import com.zman.stream.pull.stream.bean.ReadResult;
+import com.zman.stream.pull.stream.bean.ReadResultEnum;
+
+import java.util.function.UnaryOperator;
 
 public class DefaultThrough<T> implements IThrough<T> {
 
     private ISource<T> source;
+
+    private UnaryOperator<T> unaryOperator;
+
+    public DefaultThrough(){
+        unaryOperator = d -> d;
+    }
+
+    public DefaultThrough(UnaryOperator<T> unaryOperator){
+        this.unaryOperator = unaryOperator;
+    }
 
     @Override
     public ISource<T> through(ISource<T> source) {
@@ -17,11 +32,9 @@ public class DefaultThrough<T> implements IThrough<T> {
     @Override
     public ReadResult<T> produce(boolean end, ISink<T> sink) {
 
-        ReadResult readResult = source.produce(end, sink);
+        ReadResult<T> readResult = source.produce(end, sink);
         if(ReadResultEnum.Available.equals(readResult.status)){
-            if( readResult.data instanceof Integer ){
-                readResult.data = 2 * (int)readResult.data;
-            }
+            readResult.data = unaryOperator.apply(readResult.data);
         }
 
         return readResult;
