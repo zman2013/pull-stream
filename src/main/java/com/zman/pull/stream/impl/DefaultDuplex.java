@@ -3,6 +3,8 @@ package com.zman.pull.stream.impl;
 import com.zman.pull.stream.*;
 import com.zman.pull.stream.bean.ReadResult;
 
+import java.util.function.Consumer;
+
 public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
 
     private ISink<T> sink;
@@ -24,11 +26,27 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
     }
 
     /**
-     * 创建一个sink，建议使用{@link DefaultSink}
+     * 创建一个source，建议使用{@link DefaultSink}
      * @param buffer 缓冲区
      */
     public DefaultDuplex(IStreamBuffer<T> buffer){
         this(buffer, new IDuplexCallback<T>() {});
+    }
+
+    public DefaultDuplex(Consumer<T> onData, Runnable onClose, Consumer<Throwable> onException){
+        this(new IDuplexCallback<T>() {
+            public void onClosed() {
+                onClose.run();
+            }
+
+            public void onNext(T data) {
+                onData.accept(data);
+            }
+
+            public void onError(Throwable throwable) {
+                onException.accept(throwable);
+            }
+        });
     }
 
     /**
