@@ -17,24 +17,28 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
         this(new DefaultStreamBuffer<>(), new IDuplexCallback<T>() {});
     }
 
-    /**
-     * 创建一个source，建议使用{@link DefaultSource}
-     * @param callback 回调方法
-     */
     public DefaultDuplex(IDuplexCallback<T> callback){
         this(new DefaultStreamBuffer<>(), callback);
     }
 
-    /**
-     * 创建一个source，建议使用{@link DefaultSink}
-     * @param buffer 缓冲区
-     */
     public DefaultDuplex(IStreamBuffer<T> buffer){
         this(buffer, new IDuplexCallback<T>() {});
     }
 
+
     public DefaultDuplex(Consumer<T> onData, Runnable onClose, Consumer<Throwable> onException){
-        this(new IDuplexCallback<T>() {
+        this(new DefaultStreamBuffer<>(), onData, onClose, onException);
+    }
+
+    /**
+     * 创建一个双工流
+     * @param buffer        缓冲区
+     * @param onData        pull到数据时回调函数
+     * @param onClose       流关闭时的回调函数
+     * @param onException   流遇到异常时的回调函数
+     */
+    public DefaultDuplex(IStreamBuffer<T> buffer, Consumer<T> onData, Runnable onClose, Consumer<Throwable> onException){
+        this(buffer, new IDuplexCallback<T>() {
             public void onClosed() {
                 onClose.run();
             }
