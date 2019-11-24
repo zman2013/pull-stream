@@ -24,7 +24,7 @@ public class DefaultThroughTest {
         IThrough<Integer> through = new DefaultThrough<>(d-> d*10);
         ISink<Integer> sink = new DefaultSink<>(callback);
 
-        when(source.produce(false, sink))
+        when(source.get(false, sink))
                 .thenReturn(new ReadResult<>(ReadResultEnum.Available,1))
                 .thenReturn(new ReadResult<>(ReadResultEnum.Available,2))
                 .thenReturn(ReadResult.Completed);

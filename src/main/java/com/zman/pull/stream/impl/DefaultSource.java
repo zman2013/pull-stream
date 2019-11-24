@@ -35,7 +35,7 @@ public class DefaultSource<T> implements ISource<T> {
     }
 
     @Override
-    public ReadResult<T> produce(boolean end, ISink<T> sink) {
+    public ReadResult<T> get(boolean end, ISink<T> sink) {
 
         if( end || closed){
             closed = true;

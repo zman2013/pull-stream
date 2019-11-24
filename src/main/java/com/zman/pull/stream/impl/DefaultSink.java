@@ -36,7 +36,7 @@ public class DefaultSink<T> implements ISink<T> {
                 stop = true;
             }
 
-            ReadResult<T> readResult = source.produce(notifySourceEnd, this);
+            ReadResult<T> readResult = source.get(notifySourceEnd, this);
 
             switch (readResult.status){
                 case Available:

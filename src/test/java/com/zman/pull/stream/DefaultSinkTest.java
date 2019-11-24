@@ -48,8 +48,8 @@ public class DefaultSinkTest {
 
         ISink<Integer> sink = new DefaultSink<>(callback);
 
-        when(source.produce(false, sink)).thenReturn(ReadResult.Waiting);
-        when(source.produce(true, sink)).thenReturn(ReadResult.Completed);
+        when(source.get(false, sink)).thenReturn(ReadResult.Waiting);
+        when(source.get(true, sink)).thenReturn(ReadResult.Completed);
 
         sink.read(source);
         sink.close();
@@ -63,7 +63,7 @@ public class DefaultSinkTest {
 
         ISink<Integer> sink = new DefaultSink<>(callback);
 
-        when(source.produce(true, sink)).thenReturn(ReadResult.Completed);
+        when(source.get(true, sink)).thenReturn(ReadResult.Completed);
 
         sink.close();
         sink.read(source);
@@ -78,7 +78,7 @@ public class DefaultSinkTest {
         ISink<Integer> sink = new DefaultSink<>(callback);
 
         Throwable throwable = new RuntimeException();
-        when(source.produce(false, sink)).thenReturn(new ReadResult<>(ReadResultEnum.Exception, throwable));
+        when(source.get(false, sink)).thenReturn(new ReadResult<>(ReadResultEnum.Exception, throwable));
 
         sink.read(source);
 

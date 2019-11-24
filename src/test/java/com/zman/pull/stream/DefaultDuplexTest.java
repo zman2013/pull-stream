@@ -2,8 +2,6 @@ package com.zman.pull.stream;
 
 import com.zman.pull.stream.impl.DefaultDuplex;
 import com.zman.pull.stream.impl.DefaultStreamBuffer;
-import com.zman.pull.stream.util.Pull;
-import example.DuplexExample;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

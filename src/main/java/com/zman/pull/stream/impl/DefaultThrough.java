@@ -32,9 +32,9 @@ public class DefaultThrough<T> implements IThrough<T> {
     }
 
     @Override
-    public ReadResult<T> produce(boolean end, ISink<T> sink) {
+    public ReadResult<T> get(boolean end, ISink<T> sink) {
 
-        ReadResult<T> readResult = source.produce(end, sink);
+        ReadResult<T> readResult = source.get(end, sink);
         if(ReadResultEnum.Available.equals(readResult.status)){
             readResult.data = unaryOperator.apply(readResult.data);
         }

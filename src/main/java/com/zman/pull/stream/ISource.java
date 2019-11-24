@@ -16,7 +16,7 @@ public interface ISource<T> {
      * @param sink  <code>ISink</code>的引用，当<code>ISource</code>没有数据可以提供时会保存sink的引用
      * @return  本次读取数据的结果：Available 获取到数据，Waiting 等待回调，End 结束
      */
-    ReadResult<T> produce(boolean end, ISink<T> sink);
+    ReadResult<T> get(boolean end, ISink<T> sink);
 
     /**
      * 关闭流

@@ -80,7 +80,7 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
      * @return 本次读取数据的结果：Available 获取到数据，Waiting 等待回调，End 结束
      */
     @Override
-    public ReadResult<T> produce(boolean end, ISink<T> sink) {
+    public ReadResult<T> get(boolean end, ISink<T> sink) {
         if( end || closed){
             closed = true;
             callback.onClosed();
