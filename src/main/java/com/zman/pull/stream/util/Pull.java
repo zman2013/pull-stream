@@ -21,8 +21,8 @@ public class Pull {
     }
 
     /**
-     * build two stream flow: source -> duplex.sink
-     * and duplex.source -> sink
+     * build two stream flow: source =》 duplex.sink
+     * and duplex.source =》 sink
      * @param source    source
      * @param duplex    duplex acts as both source and sink
      * @param sink      sink
