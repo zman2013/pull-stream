@@ -17,6 +17,8 @@ public class DefaultSource<T> implements ISource<T> {
 
     private boolean closed;
 
+    public DefaultSource(){this(new DefaultStreamBuffer<>(),()->{});}
+
     public DefaultSource(IStreamBuffer<T> buffer){
         this(buffer, ()->{});
     }
@@ -59,5 +61,10 @@ public class DefaultSource<T> implements ISource<T> {
     @Override
     public void close() {
         closed = true;
+    }
+
+
+    public void push(T data){
+        buffer.offer(data);
     }
 }

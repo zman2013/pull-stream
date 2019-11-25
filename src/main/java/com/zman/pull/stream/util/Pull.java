@@ -20,4 +20,17 @@ public class Pull {
         pull(sink, source);
     }
 
+    /**
+     * build two stream flow: source -> duplex.sink
+     * and duplex.source -> sink
+     * @param source    source
+     * @param duplex    duplex acts as both source and sink
+     * @param sink      sink
+     * @param <T>       element type
+     */
+    public static <T> void pull(ISource<T> source, IDuplex<T> duplex, ISink<T> sink){
+        duplex.read(source);
+        sink.read(duplex);
+    }
+
 }

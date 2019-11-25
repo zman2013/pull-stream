@@ -9,6 +9,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.xml.ws.Holder;
 
+import static com.zman.pull.stream.util.Pull.pull;
+
 @RunWith(MockitoJUnitRunner.class)
 public class PullTest {
 
@@ -21,7 +23,7 @@ public class PullTest {
         IThrough<Integer> through = new DefaultThrough<>();
         ISink<Integer> sink = new DefaultSink<>(d -> holder.value=d);
 
-        Pull.pull(source, through, sink);
+        pull(source, through, sink);
 
         // 验证
         Assert.assertEquals(1, holder.value.intValue());
@@ -61,4 +63,30 @@ public class PullTest {
         new Pull();
     }
 
+
+    /**
+     * 测试pull(source, duplex, sink)
+     */
+    @Test
+    public void pullDuplex(){
+        Holder<Integer> holder = new Holder<>();
+
+        DefaultSource<Integer> source = new DefaultSource<>();
+        Holder<DefaultDuplex<Integer>> duplexHolder = new Holder<>();
+        IDuplexCallback callback = new IDuplexCallback<Integer>() {
+            public void onNext(Integer data) {
+                duplexHolder.value.push(data);
+            }
+        };
+        DefaultDuplex<Integer> duplex = new DefaultDuplex<>(callback);
+        duplexHolder.value = duplex;
+        DefaultSink<Integer> sink = new DefaultSink<>(d -> holder.value = d);
+
+        pull(source, duplex, sink);
+
+        Integer expectedValue = 193;
+        source.push(expectedValue);
+
+        Assert.assertEquals(expectedValue, holder.value);
+    }
 }
