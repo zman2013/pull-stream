@@ -7,11 +7,11 @@ import java.util.function.Consumer;
 
 public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
 
-    private ISink<T> sink;
+    protected ISink<T> sink;
 
-    private IStreamBuffer<T> buffer;
+    protected IStreamBuffer<T> buffer;
 
-    private IDuplexCallback callback;
+    protected IDuplexCallback callback;
 
     public DefaultDuplex(){
         this(new DefaultStreamBuffer<>(), new IDuplexCallback<T>() {});
