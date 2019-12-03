@@ -17,7 +17,7 @@ implementation "com.zmannotes.stream:pull-stream:0.0.11"
 <dependency>
     <groupId>com.zmannotes.stream</groupId>
     <artifactId>pull-stream</artifactId>
-    <version>0.0.11</version>
+    <version>0.0.13</version>
 </dependency>
 ```
 ### Hello World
