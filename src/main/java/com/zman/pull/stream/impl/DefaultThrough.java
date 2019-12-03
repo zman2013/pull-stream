@@ -7,24 +7,24 @@ import com.zman.pull.stream.IThrough;
 import com.zman.pull.stream.bean.ReadResultEnum;
 import com.zman.pull.stream.bean.ReadResult;
 
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
-public class DefaultThrough<T> implements IThrough<T> {
+public class DefaultThrough<T, R> implements IThrough<T, R> {
 
-    private ISource<T> source;
+    protected ISource<T> source;
 
-    private UnaryOperator<T> unaryOperator;
+    protected Function<T, R> function;
 
     public DefaultThrough(){
-        unaryOperator = d -> d;
+        function = d -> (R)d;
     }
 
-    public DefaultThrough(UnaryOperator<T> unaryOperator){
-        this.unaryOperator = unaryOperator;
+    public DefaultThrough(Function<T, R> function){
+        this.function = function;
     }
 
     @Override
-    public ISource<T> through(ISource<T> source) {
+    public ISource<R> through(ISource<T> source) {
 
         this.source = source;
 
@@ -32,11 +32,11 @@ public class DefaultThrough<T> implements IThrough<T> {
     }
 
     @Override
-    public ReadResult<T> get(boolean end, ISink<T> sink) {
+    public ReadResult get(boolean end, ISink sink) {
 
-        ReadResult<T> readResult = source.get(end, sink);
+        ReadResult readResult = source.get(end, sink);
         if(ReadResultEnum.Available.equals(readResult.status)){
-            readResult.data = unaryOperator.apply(readResult.data);
+            readResult.data = function.apply((T)readResult.data);
         }
 
         return readResult;

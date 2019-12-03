@@ -20,7 +20,7 @@ public class PullTest {
 
         IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
         ISource<Integer> source = new DefaultSource<>(buffer);
-        IThrough<Integer> through = new DefaultThrough<>();
+        IThrough<Integer, Integer> through = new DefaultThrough<>();
         ISink<Integer> sink = new DefaultSink<>(d -> holder.value=d);
 
         pull(source, through, sink);

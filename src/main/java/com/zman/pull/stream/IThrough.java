@@ -7,8 +7,8 @@ package com.zman.pull.stream;
  *
  * -- pull-stream
  */
-public interface IThrough<T> extends ISource<T>{
+public interface IThrough<T, R> extends ISource<R>{
 
-    ISource<T> through(ISource<T> source);
+    ISource<R> through(ISource<T> source);
 
 }

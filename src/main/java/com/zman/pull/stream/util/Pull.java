@@ -11,7 +11,7 @@ public class Pull {
         sink.read(source);
     }
 
-    public static <T> void pull(ISource<T> source, IThrough<T> through, ISink<T> sink){
+    public static <T, R> void pull(ISource<T> source, IThrough<T, R> through, ISink<R> sink){
         sink.read(through.through(source));
     }
 

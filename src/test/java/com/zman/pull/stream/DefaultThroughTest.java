@@ -21,7 +21,7 @@ public class DefaultThroughTest {
 
     @Test
     public void read(){
-        IThrough<Integer> through = new DefaultThrough<>(d-> d*10);
+        IThrough<Integer, Integer> through = new DefaultThrough<>(d-> d*10);
         ISink<Integer> sink = new DefaultSink<>(callback);
 
         when(source.get(false, sink))

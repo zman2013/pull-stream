@@ -25,7 +25,7 @@ public class DefaultSinkTest {
     public void read(){
         IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
         ISource<Integer> source = new DefaultSource<>(buffer, ()->{});
-        IThrough<Integer> through = new DefaultThrough<>();
+        IThrough<Integer, Integer> through = new DefaultThrough<>();
         ISink<Integer> sink = new DefaultSink<>(callback);
 
         buffer.offer(1);
