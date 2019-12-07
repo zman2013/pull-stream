@@ -11,7 +11,7 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
 
     protected IStreamBuffer<T> buffer;
 
-    protected IDuplexCallback callback;
+//    protected IDuplexCallback callback;
 
     public DefaultDuplex(){
         this(new DefaultStreamBuffer<>(), new IDuplexCallback<T>() {});
@@ -69,7 +69,6 @@ public class DefaultDuplex<T> extends DefaultSink<T> implements IDuplex<T> {
         });
 
         super.callback = callback;
-        this.callback = callback;
     }
 
     /**

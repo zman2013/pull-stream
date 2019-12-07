@@ -6,16 +6,32 @@ import com.zman.pull.stream.ISource;
 import com.zman.pull.stream.ISinkCallback;
 import com.zman.pull.stream.bean.ReadResult;
 
+import java.util.function.Consumer;
+
 public class DefaultSink<T> implements ISink<T> {
 
     protected boolean closed;
 
     protected ISinkCallback<T> callback;
 
-    private ISource<T> source;
+    protected ISource<T> source;
 
     public DefaultSink(){
         callback = data -> {};
+    }
+
+    public DefaultSink(Consumer<T> onNext, Runnable onClosed, Consumer<Throwable> onException){
+        this(new ISinkCallback<T>() {
+            public void onNext(T data) {
+                onNext.accept(data);
+            }
+            public void onClosed() {
+                onClosed.run();
+            }
+            public void onError(Throwable throwable) {
+                onException.accept(throwable);
+            }
+        });
     }
 
     public DefaultSink(ISinkCallback<T> callback){

@@ -15,6 +15,14 @@ public class Pull {
         sink.read(through.through(source));
     }
 
+    public static <T,R> ISource<R> pull(ISource<T> source, IThrough... throughs){
+        ISource intermediate = source;
+        for(IThrough through : throughs){
+            intermediate = through.through(intermediate);
+        }
+        return intermediate;
+    }
+
     public static <T> void link(IDuplex<T> source, IDuplex<T> sink){
         pull(source, sink);
         pull(sink, source);
