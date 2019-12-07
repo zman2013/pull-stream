@@ -10,14 +10,14 @@ https://pull-stream.github.io/
 ### Setting up the dependency
 * Gradle
 ```groovy
-implementation "com.zmannotes.stream:pull-stream:0.0.11"
+implementation "com.zmannotes.stream:pull-stream:2.0.0"
 ```
 * Maven
 ```xml
 <dependency>
     <groupId>com.zmannotes.stream</groupId>
     <artifactId>pull-stream</artifactId>
-    <version>0.0.13</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 ### Hello World
