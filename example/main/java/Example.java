@@ -18,10 +18,10 @@ public class Example {
         );
 
         // 所有数据对1000取模
-        IThrough<Integer> through = new DefaultThrough<>(d->d%1000);
+        IThrough<Integer, Integer> through = new DefaultThrough<>(d->d%1000);
 
         // 数据最终消费方
-        ISink<Integer> sink = new DefaultSink<>(System.out::println);
+        ISink<Integer> sink = new DefaultSink<>(System.out::println, t->{});
 
         // pull: source -> through -> sink
         pull(source, through, sink);

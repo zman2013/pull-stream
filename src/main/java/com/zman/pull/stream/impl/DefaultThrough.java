@@ -32,9 +32,9 @@ public class DefaultThrough<T, R> implements IThrough<T, R> {
     }
 
     @Override
-    public ReadResult get(boolean end, ISink sink) {
+    public ReadResult get(boolean end, Throwable throwable, ISink sink) {
 
-        ReadResult readResult = source.get(end, sink);
+        ReadResult readResult = source.get(end, throwable, sink);
         if(ReadResultEnum.Available.equals(readResult.status)){
             readResult.data = function.apply((T)readResult.data);
         }

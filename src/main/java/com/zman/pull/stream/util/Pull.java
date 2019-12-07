@@ -24,8 +24,8 @@ public class Pull {
     }
 
     public static <T> void link(IDuplex<T> source, IDuplex<T> sink){
-        pull(source, sink);
-        pull(sink, source);
+        pull(source.source(), sink.sink());
+        pull(sink.source(), source.sink());
     }
 
     /**
@@ -37,8 +37,8 @@ public class Pull {
      * @param <T>       element type
      */
     public static <T> void pull(ISource<T> source, IDuplex<T> duplex, ISink<T> sink){
-        duplex.read(source);
-        sink.read(duplex);
+        pull(source, duplex.sink());
+        pull(duplex.source(), sink);
     }
 
 }

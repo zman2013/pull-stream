@@ -11,4 +11,11 @@ public interface IThrough<T, R> extends ISource<R>{
 
     ISource<R> through(ISource<T> source);
 
+    /**
+     * close the source stream
+     *
+     * @param throwable optional
+     */
+    @Override
+    default void close(Throwable throwable){}
 }

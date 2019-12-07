@@ -6,12 +6,10 @@ public class DuplexExample {
     private IDuplex duplex;
 
     public DuplexExample(){
-        duplex = new DefaultDuplex(this::onData, this::onClose, this::onError);
+        duplex = new DefaultDuplex(this::onData, t->{});
     }
 
     private void onData(Object data){}
-
-    private void onClose(){}
 
     private void onError(Object e){}
 

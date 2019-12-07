@@ -9,7 +9,5 @@ public enum ReadResultEnum{
     // Source暂无数据
     Waiting,
     // Source抛出异常
-    Exception,
-    // Source终止提供数据了
     End
 }

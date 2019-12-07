@@ -21,7 +21,7 @@ public class PullTest {
         IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
         ISource<Integer> source = new DefaultSource<>(buffer);
         IThrough<Integer, Integer> through = new DefaultThrough<>();
-        ISink<Integer> sink = new DefaultSink<>(d -> holder.value=d);
+        ISink<Integer> sink = new DefaultSink<>(d -> holder.value=d, t->{});
 
         pull(source, through, sink);
 
@@ -35,19 +35,13 @@ public class PullTest {
         Holder<Integer> holderB = new Holder<>(0);
 
         IStreamBuffer<Integer> bufferA = new DefaultStreamBuffer<>();
-        IDuplex<Integer> a = new DefaultDuplex<>(bufferA, new IDuplexCallback<Integer>() {
-            public void onNext(Integer data) {
-                holderA.value = data;
-            }
-        });
+        IDuplex<Integer> a = new DefaultDuplex<>(bufferA, t->{},
+                data->holderA.value = data, ()->{}, t->{});
 
 
         IStreamBuffer<Integer> bufferB = new DefaultStreamBuffer<>();
-        IDuplex<Integer> b = new DefaultDuplex<>(bufferB, new IDuplexCallback<Integer>() {
-            public void onNext(Integer data) {
-                holderB.value = data;
-            }
-        });
+        IDuplex<Integer> b = new DefaultDuplex<>(bufferB, t->{},
+                data->holderB.value = data, ()->{}, t->{});
 
         Pull.link(a, b);
         bufferA.offer(100);
@@ -73,14 +67,12 @@ public class PullTest {
 
         DefaultSource<Integer> source = new DefaultSource<>();
         Holder<DefaultDuplex<Integer>> duplexHolder = new Holder<>();
-        IDuplexCallback callback = new IDuplexCallback<Integer>() {
-            public void onNext(Integer data) {
-                duplexHolder.value.push(data);
-            }
-        };
-        DefaultDuplex<Integer> duplex = new DefaultDuplex<>(callback);
+
+        DefaultDuplex<Integer> duplex = new DefaultDuplex<>(
+                data->duplexHolder.value.source().push(data), t->{});
+
         duplexHolder.value = duplex;
-        DefaultSink<Integer> sink = new DefaultSink<>(d -> holder.value = d);
+        DefaultSink<Integer> sink = new DefaultSink<>(d -> holder.value = d, t->{});
 
         pull(source, duplex, sink);
 

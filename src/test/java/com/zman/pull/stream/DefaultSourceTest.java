@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.function.Consumer;
+
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -15,13 +17,15 @@ import static org.mockito.Mockito.verify;
 public class DefaultSourceTest {
 
     @Mock
-    ISinkCallback<Integer> sinkCallback;
+    Consumer<Integer> onNext;
+    @Mock
+    Consumer<Throwable> onClosed;
 
     @Test
     public void read(){
         IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
         ISource<Integer> source = new DefaultSource<>(buffer);
-        ISink<Integer> sink = new DefaultSink<>(sinkCallback);
+        ISink<Integer> sink = new DefaultSink<>(onNext, onClosed);
 
         buffer.offer(1);
 
@@ -29,12 +33,12 @@ public class DefaultSourceTest {
 
         buffer.offer(2);
 
-        source.close();
+        source.close(null);
         sink.read(source);
 
         // 验证
-        verify(sinkCallback, times(1)).onNext(1);
-        verify(sinkCallback, times(1)).onNext(2);
-        verify(sinkCallback, times(1)).onClosed();
+        verify(onNext, times(1)).accept(1);
+        verify(onNext, times(1)).accept(2);
+        verify(onClosed, times(1)).accept(null);
     }
 }

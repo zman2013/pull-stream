@@ -26,16 +26,28 @@ public interface ISource<T> {
      * 3. if current source occurs exception, this function will return ReadResult.Exception with throwable.
      *
      * @param end   control whether the source stop working
+     * @param throwable when throwable is not null, the end must be true
      * @param sink  the reference of the <code>ISink</code>.
      *              when <code>ISource</code> doesn't have data, it will hold the sink's reference
      * @return  Available with data, Completion, Waiting, Exception with throwable.
      */
-    ReadResult<T> get(boolean end, ISink<T> sink);
+    ReadResult<T> get(boolean end, Throwable throwable, ISink<T> sink);
+
+    /**
+     * convenient function for {@link #get(boolean, Throwable, ISink)}
+     * @param end   {@link #get(boolean, Throwable, ISink)}
+     * @param sink  {@link #get(boolean, Throwable, ISink)}
+     * @return  {@link #get(boolean, Throwable, ISink)}
+     */
+    default ReadResult<T> get(boolean end, ISink<T> sink){ return get(end, null, sink);}
 
     /**
      * close the source stream
+     * @param throwable optional
      */
-    default void close(){}
+    void close(Throwable throwable);
+
+    default void close(){close(null);}
 
     /**
      * a util function for more convenient, this function is not necessary for pull-stream.

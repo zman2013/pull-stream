@@ -16,23 +16,25 @@ import static org.mockito.Mockito.*;
 public class DefaultDuplexTest {
 
     @Mock
-    IDuplexCallback<Integer> duplexCallback;
+    Consumer<Integer> onNext;
+    @Mock
+    Consumer<Throwable> onClosed;
 
     @Test
     public void testDuplexCloseSourceFirst(){
         IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
-        IDuplex<Integer> source = new DefaultDuplex<>(buffer);
-        IDuplex<Integer> sink = new DefaultDuplex<>(duplexCallback);
+        IDuplex<Integer> duplexa = new DefaultDuplex<>(buffer, t->{});
+        IDuplex<Integer> duplexb = new DefaultDuplex<>(onNext, onClosed);
         buffer.offer(1);
 
-        pull(source, sink);
+        pull(duplexa.source(), duplexb.sink());
 
         buffer.offer(2);
-        source.close();
+        duplexa.source().close();
 
-        verify(duplexCallback, times(1)).onNext(1);
-        verify(duplexCallback, times(1)).onNext(2);
-        verify(duplexCallback, times(0)).onClosed();    // source close，不会主动通知sink close
+        verify(onNext, times(1)).accept(1);
+        verify(onNext, times(1)).accept(2);
+        verify(onClosed, times(0)).accept(null);    // source close，不会主动通知sink close
     }
 
     /**
@@ -41,58 +43,56 @@ public class DefaultDuplexTest {
     @Test
     public void testDuplexPullDataAfterSourceClosed(){
         IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
-        IDuplex<Integer> source = new DefaultDuplex<>(buffer);
-        IDuplex<Integer> sink = new DefaultDuplex<>(duplexCallback);
+        IDuplex<Integer> duplexa = new DefaultDuplex<>(buffer, t->{});
+        IDuplex<Integer> duplexb = new DefaultDuplex<>(onNext, onClosed);
         buffer.offer(1);
 
-        pull(source, sink);
+        pull(duplexa.source(), duplexb.sink());
 
         buffer.offer(2);
-        source.close();
+        duplexa.source().close();
 
         // source 关闭了，sink依然尝试拉取数据
-        sink.read(source);
+        duplexb.sink().read(duplexa.source());
 
-        verify(duplexCallback, times(1)).onNext(1);
-        verify(duplexCallback, times(1)).onNext(2);
-        verify(duplexCallback, times(1)).onClosed();
+        verify(onNext, times(1)).accept(1);
+        verify(onNext, times(1)).accept(2);
+        verify(onClosed, times(1)).accept(null);
     }
 
     @Test
     public void testDuplexCloseSinkFirst(){
         IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
-        IDuplex<Integer> source = new DefaultDuplex<>(buffer);
-        IDuplex<Integer> sink = new DefaultDuplex<>(duplexCallback);
+        IDuplex<Integer> duplexa = new DefaultDuplex<>(buffer, t->{});
+        IDuplex<Integer> duplexb = new DefaultDuplex<>(onNext, onClosed);
         buffer.offer(1);
 
-        pull(source, sink);
+        pull(duplexa.source(), duplexb.sink());
 
         buffer.offer(2);
-        sink.close();
-        source.close();
+        duplexa.source().close();
+        duplexb.sink().close();
 
-        verify(duplexCallback, times(1)).onNext(1);
-        verify(duplexCallback, times(1)).onNext(2);
-        verify(duplexCallback, times(1)).onClosed();
+        verify(onNext, times(1)).accept(1);
+        verify(onNext, times(1)).accept(2);
+        verify(onClosed, times(1)).accept(null);
     }
 
 
     @Test
     public void lambda(){
         Consumer onData = mock(Consumer.class);
-        Runnable onClose = mock(Runnable.class);
-        Consumer onError = mock(Consumer.class);
-        IDuplex<Integer> sink = new DefaultDuplex<>(onData, onClose, onError);
+        Consumer onClosed = mock(Consumer.class);
+        IDuplex<Integer> duplexa = new DefaultDuplex<>(new DefaultStreamBuffer<>(), t->{});
+        IDuplex<Integer> duplexb = new DefaultDuplex<>(onData, onClosed);
 
-        DefaultDuplex<Integer> source = new DefaultDuplex<>();
+        pull(duplexa.source(), duplexb.sink());
 
-        pull(source, sink);
-
-        source.push(1);
-        sink.close();
+        duplexa.source().push(1);
+        duplexb.sink().close();
 
         verify(onData, times(1)).accept(1);
-        verify(onClose, times(1)).run();
+        verify(onClosed, times(1)).accept(null);
     }
 
 }

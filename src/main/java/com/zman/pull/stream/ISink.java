@@ -22,7 +22,10 @@ public interface ISink<T> {
 
     /**
      * 关闭流
+     * @param throwable optional
      */
-    default void close(){}
+    void close(Throwable throwable);
+
+    default void close(){close(null);}
 
 }

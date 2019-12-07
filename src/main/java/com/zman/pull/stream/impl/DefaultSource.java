@@ -5,6 +5,11 @@ import com.zman.pull.stream.ISink;
 import com.zman.pull.stream.ISource;
 import com.zman.pull.stream.IStreamBuffer;
 import com.zman.pull.stream.bean.ReadResult;
+import com.zman.pull.stream.bean.ReadResultEnum;
+
+import java.util.function.Consumer;
+
+import static com.zman.pull.stream.bean.ReadResult.Completed;
 
 public class DefaultSource<T> implements ISource<T> {
 
@@ -12,17 +17,17 @@ public class DefaultSource<T> implements ISource<T> {
 
     private IStreamBuffer<T> buffer;
 
-    private Runnable onClosed;
+    private Consumer<Throwable> onClosed;
 
     private boolean closed;
 
-    public DefaultSource(){this(new DefaultStreamBuffer<>(),()->{});}
+    public DefaultSource(){this(new DefaultStreamBuffer<>(),t->{});}
 
     public DefaultSource(IStreamBuffer<T> buffer){
-        this(buffer, ()->{});
+        this(buffer, t->{});
     }
 
-    public DefaultSource(IStreamBuffer<T> buffer, Runnable onClosed){
+    public DefaultSource(IStreamBuffer<T> buffer, Consumer<Throwable> onClosed){
         this.buffer = buffer;
         buffer.on("update", (data)->{
             if( sink != null ){
@@ -36,12 +41,16 @@ public class DefaultSource<T> implements ISource<T> {
     }
 
     @Override
-    public ReadResult<T> get(boolean end, ISink<T> sink) {
+    public ReadResult<T> get(boolean end, Throwable throwable, ISink<T> sink) {
 
-        if( end || closed){
+        if( end ){
             closed = true;
-            onClosed.run();
-            return ReadResult.Completed;
+            onClosed.accept(throwable);
+            return Completed;
+        }
+
+        if( closed ){
+            return new ReadResult(ReadResultEnum.End, closeReason);
         }
 
         T data = buffer.poll();
@@ -54,11 +63,10 @@ public class DefaultSource<T> implements ISource<T> {
 
     }
 
-    /**
-     * 关闭流
-     */
-    @Override
-    public void close() {
+
+    private Throwable closeReason;
+    public void close(Throwable throwable) {
+        this.closeReason = throwable;
         closed = true;
     }
 
