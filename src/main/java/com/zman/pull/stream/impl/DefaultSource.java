@@ -3,7 +3,6 @@ package com.zman.pull.stream.impl;
 
 import com.zman.pull.stream.ISink;
 import com.zman.pull.stream.ISource;
-import com.zman.pull.stream.ISourceCallback;
 import com.zman.pull.stream.IStreamBuffer;
 import com.zman.pull.stream.bean.ReadResult;
 
@@ -13,7 +12,7 @@ public class DefaultSource<T> implements ISource<T> {
 
     private IStreamBuffer<T> buffer;
 
-    private ISourceCallback callback;
+    private Runnable onClosed;
 
     private boolean closed;
 
@@ -23,7 +22,7 @@ public class DefaultSource<T> implements ISource<T> {
         this(buffer, ()->{});
     }
 
-    public DefaultSource(IStreamBuffer<T> buffer, ISourceCallback callback){
+    public DefaultSource(IStreamBuffer<T> buffer, Runnable onClosed){
         this.buffer = buffer;
         buffer.on("update", (data)->{
             if( sink != null ){
@@ -33,7 +32,7 @@ public class DefaultSource<T> implements ISource<T> {
             }
         });
 
-        this.callback = callback;
+        this.onClosed = onClosed;
     }
 
     @Override
@@ -41,7 +40,7 @@ public class DefaultSource<T> implements ISource<T> {
 
         if( end || closed){
             closed = true;
-            callback.onClosed();
+            onClosed.run();
             return ReadResult.Completed;
         }
 
@@ -64,7 +63,7 @@ public class DefaultSource<T> implements ISource<T> {
     }
 
 
-    public void push(T data){
-        buffer.offer(data);
+    public boolean push(T data){
+        return buffer.offer(data);
     }
 }

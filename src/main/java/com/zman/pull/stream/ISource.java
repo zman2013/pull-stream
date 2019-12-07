@@ -11,16 +11,37 @@ import com.zman.pull.stream.bean.ReadResult;
 public interface ISource<T> {
 
     /**
-     * 返回一条数据
-     * @param end   控制source是否结束数据的生产
-     * @param sink  <code>ISink</code>的引用，当<code>ISource</code>没有数据可以提供时会保存sink的引用
-     * @return  本次读取数据的结果：Available 获取到数据，Waiting 等待回调，End 结束
+     *
+     * If current source has data, this function will return ReadResult.Available with specific data.
+     *
+     * While there are other 3 cases:
+     *
+     * 1. if current source stopped working or the parameter end is true,
+     * this function will return ReadResult.Completed.
+     *
+     * 2. if current source doesn't have any data, this function will return ReadResult.Waiting
+     * and this source holds the sink reference.
+     * And when this source produces more data, it will notify sink to read more data.
+     *
+     * 3. if current source occurs exception, this function will return ReadResult.Exception with throwable.
+     *
+     * @param end   control whether the source stop working
+     * @param sink  the reference of the <code>ISink</code>.
+     *              when <code>ISource</code> doesn't have data, it will hold the sink's reference
+     * @return  Available with data, Completion, Waiting, Exception with throwable.
      */
     ReadResult<T> get(boolean end, ISink<T> sink);
 
     /**
-     * 关闭流
+     * close the source stream
      */
     default void close(){}
 
+    /**
+     * a util function for more convenient, this function is not necessary for pull-stream.
+     * push data into the source's local buffer
+     * @param data  data
+     * @return  success or failure
+     */
+    default boolean push(T data){return false;}
 }
