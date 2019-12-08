@@ -10,4 +10,18 @@ public interface IDuplex<T> {
 
     ISource<T> source();
 
+    /**
+     * close sink and source
+     * @param throwable throwable
+     */
+    void close(Throwable throwable);
+
+    default void close(){close(null);}
+
+    /**
+     * push data into source buffer
+     * @param data data
+     * @return success or failure
+     */
+    boolean push(T data);
 }

@@ -38,6 +38,28 @@ public class DefaultDuplex<T> implements IDuplex<T> {
         return source;
     }
 
+    /**
+     * close sink and source
+     *
+     * @param throwable throwable
+     */
+    @Override
+    public void close(Throwable throwable) {
+        source.close(throwable);
+        sink.close(throwable);
+    }
+
+    /**
+     * push data into source buffer
+     *
+     * @param data data
+     * @return success or failure
+     */
+    @Override
+    public boolean push(T data) {
+        return source.push(data);
+    }
+
     @Override
     public ISink<T> sink() {
         return sink;
