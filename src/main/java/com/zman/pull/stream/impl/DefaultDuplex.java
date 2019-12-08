@@ -11,26 +11,35 @@ public class DefaultDuplex<T> implements IDuplex<T> {
 
     private ISource<T> source;
 
-    public DefaultDuplex(){
+    public DefaultDuplex() {
         this(new DefaultStreamBuffer<>(), throwable -> {});
     }
 
-    public DefaultDuplex(IStreamBuffer<T> streamBuffer, Consumer<Throwable> onSourceClosed){
+    public DefaultDuplex(IStreamBuffer<T> streamBuffer, Consumer<Throwable> onSourceClosed) {
         this(streamBuffer, onSourceClosed,
-                d->true, ()->{}, t->{});
+                d -> true, () -> {}, t -> {});
     }
 
 
-    public DefaultDuplex(Function<T,Boolean> onSinkNext, Consumer<Throwable> onSinkClosed){
-        this(new DefaultStreamBuffer<>(), t->{}, onSinkNext, ()->{}, onSinkClosed);
+    public DefaultDuplex(Function<T, Boolean> onSinkNext, Consumer<Throwable> onSinkClosed) {
+        this(new DefaultStreamBuffer<>(), t -> {},
+                onSinkNext, () -> {}, onSinkClosed);
     }
 
 
     public DefaultDuplex(
             IStreamBuffer<T> streamBuffer, Consumer<Throwable> onSourceClosed,
-            Function<T,Boolean> onSinkNext, Runnable onSinkWaiting, Consumer<Throwable> onSinkClosed){
-        this.sink = new DefaultSink<>(onSinkNext, onSinkWaiting, onSinkClosed);
-        this.source = new DefaultSource<>(streamBuffer, onSourceClosed);
+            Function<T, Boolean> onSinkNext, Runnable onSinkWaiting, Consumer<Throwable> onSinkClosed) {
+        this.sink = new DefaultSink<>(onSinkNext, onSinkWaiting,
+                throwable -> {
+                    source.close(throwable);
+                    onSinkClosed.accept(throwable);
+                });
+        this.source = new DefaultSource<>(streamBuffer,
+                throwable -> {
+                    sink.close(throwable);
+                    onSourceClosed.accept(throwable);
+                });
     }
 
     @Override
@@ -64,7 +73,6 @@ public class DefaultDuplex<T> implements IDuplex<T> {
     public ISink<T> sink() {
         return sink;
     }
-
 
 
 }
