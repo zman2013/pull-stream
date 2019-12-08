@@ -19,6 +19,8 @@ public class DefaultSource<T> implements ISource<T> {
 
     private Consumer<Throwable> onClosed;
 
+    private Runnable onBufferEmpty = ()->{};
+
     private boolean closed;
 
     public DefaultSource(){this(new DefaultStreamBuffer<>(),t->{});}
@@ -50,12 +52,13 @@ public class DefaultSource<T> implements ISource<T> {
         }
 
         if( closed ){
-            return new ReadResult(ReadResultEnum.End, closeReason);
+            return new ReadResult(ReadResultEnum.Closed, closeReason);
         }
 
         T data = buffer.poll();
         if( data == null ){
             this.sink = sink;
+            onBufferEmpty.run();
             return ReadResult.Waiting;
         }else{
             return new ReadResult<>(data);
@@ -70,6 +73,41 @@ public class DefaultSource<T> implements ISource<T> {
         closed = true;
     }
 
+    /**
+     * callback on closed
+     *
+     * @param callback callback
+     * @return self
+     */
+    @Override
+    public ISource<T> onClosed(Consumer<Throwable> callback) {
+        onClosed = callback;
+        return this;
+    }
+
+    /**
+     * callback on buffer empty
+     *
+     * @param callback callback
+     * @return self
+     */
+    @Override
+    public ISource<T> onBufferEmpty(Runnable callback) {
+        this.onBufferEmpty = callback;
+        return this;
+    }
+
+    /**
+     * inject stream buffer
+     *
+     * @param buffer buffer
+     * @return self
+     */
+    @Override
+    public ISource<T> streamBuffer(IStreamBuffer<T> buffer) {
+        this.buffer =buffer;
+        return this;
+    }
 
     public boolean push(T data){
         return buffer.offer(data);

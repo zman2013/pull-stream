@@ -21,7 +21,7 @@ public class Example {
         IThrough<Integer, Integer> through = new DefaultThrough<>(d->d%1000);
 
         // 数据最终消费方
-        ISink<Integer> sink = new DefaultSink<>(System.out::println, t->{});
+        ISink<Integer> sink = new DefaultSink<>(d->{System.out.println(d);return true;}, t->{});
 
         // pull: source -> through -> sink
         pull(source, through, sink);

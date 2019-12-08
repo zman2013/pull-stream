@@ -3,9 +3,9 @@ package com.zman.pull.stream.bean;
 
 public class ReadResult<T> {
 
-    public static final ReadResult Completed = new ReadResult<>(ReadResultEnum.End);
+    public static final ReadResult Completed = new ReadResult<>(ReadResultEnum.Closed);
 
-    public static final ReadResult Waiting = new ReadResult<>(ReadResultEnum.Waiting);
+    public static final ReadResult Waiting = new ReadResult<>(ReadResultEnum.Wait);
 
     public ReadResultEnum status;
 

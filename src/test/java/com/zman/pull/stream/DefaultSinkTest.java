@@ -5,13 +5,13 @@ import com.zman.pull.stream.bean.ReadResultEnum;
 import com.zman.pull.stream.impl.DefaultSink;
 import com.zman.pull.stream.impl.DefaultSource;
 import com.zman.pull.stream.impl.DefaultStreamBuffer;
-import com.zman.pull.stream.impl.DefaultThrough;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.mockito.Mockito.*;
 
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class DefaultSinkTest {
 
     @Mock
-    Consumer<Integer> onNext;
+    Function<Integer,Boolean> onNext;
     @Mock
     Runnable onWait;
     @Mock
@@ -35,6 +35,8 @@ public class DefaultSinkTest {
 
         buffer.offer(1);
 
+        when(onNext.apply(any())).thenReturn(false);
+
         sink.read(source);
 
         buffer.offer(2);
@@ -42,8 +44,8 @@ public class DefaultSinkTest {
         sink.close(null);
 
         // 验证
-        verify(onNext, times(1)).accept(1);
-        verify(onNext, times(1)).accept(2);
+        verify(onNext, times(1)).apply(1);
+        verify(onNext, times(1)).apply(2);
         verify(onWait, times(2)).run();
         verify(onClosed, times(1)).accept(null);
     }
@@ -83,7 +85,7 @@ public class DefaultSinkTest {
         ISink<Integer> sink = new DefaultSink<>(onNext, onClosed);
 
         Throwable throwable = new RuntimeException();
-        when(source.get(false, null, sink)).thenReturn(new ReadResult<>(ReadResultEnum.End, throwable));
+        when(source.get(false, null, sink)).thenReturn(new ReadResult<>(ReadResultEnum.Closed, throwable));
 
         sink.read(source);
 

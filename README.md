@@ -10,14 +10,14 @@ https://pull-stream.github.io/
 ### Setting up the dependency
 * Gradle
 ```groovy
-implementation "com.zmannotes.stream:pull-stream:2.0.0"
+implementation "com.zmannotes.stream:pull-stream:2.0.1"
 ```
 * Maven
 ```xml
 <dependency>
     <groupId>com.zmannotes.stream</groupId>
     <artifactId>pull-stream</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 ### Hello World
@@ -54,15 +54,13 @@ public class DuplexExample {
     private IDuplex duplex;
     
     public DuplexExample(){
-        duplex = new DefaultDuplex(this::onData, this::onClose, this::onError);
+        duplex = new DefaultDuplex(this::onData, this::onClosed);
     }
     
     // 消费数据
-    private void onData(Object data){}
+    private boolean onData(Object data){}
     // 流关闭时回调
-    private void onClose(){}
-    // 流异常时回调
-    private void onError(Object e){}
+    private void onClosed(Throwable throwable){}
     
 }
 ```
@@ -72,18 +70,21 @@ Holder<Integer> holderA = new Holder<>(0);
 Holder<Integer> holderB = new Holder<>(0);
 
 IStreamBuffer<Integer> bufferA = new DefaultStreamBuffer<>();
-IDuplex<Integer> a = new DefaultDuplex<>(bufferA, new IDuplexCallback<Integer>() {
-    public void onNext(Integer data) {
-        holderA.value = data;
+IDuplex<Integer> a = new DefaultDuplex<>(bufferA, 
+        data -> {
+            holderA.value = data;
+            return false;
+        }
     }
 });
 
 
 IStreamBuffer<Integer> bufferB = new DefaultStreamBuffer<>();
-IDuplex<Integer> b = new DefaultDuplex<>(bufferB, new IDuplexCallback<Integer>() {
-    public void onNext(Integer data) {
-        holderB.value = data;
-    }
+IDuplex<Integer> b = new DefaultDuplex<>(bufferB, 
+        data ->{
+            holderB.value = data;
+            return false;
+        }
 });
 
 Pull.link(a, b);
@@ -98,21 +99,22 @@ b.close();
 You can create an `ISinkCallback\ISourceCallback\IDuplexCallback` to be invoked when sth. occurs on the streams.
 ```java
 IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
-ISource<Integer> source = new DefaultSource<>(buffer, ()->{});
-IThrough<Integer> through = new DefaultThrough<>();
-ISink<Integer> sink = new DefaultSink<>(callback);
+ISource<Integer> source = new DefaultSource<>(buffer, t->{});
+ISink<Integer> sink = new DefaultSink<>(onNext, onWait, onClosed);
 
 buffer.offer(1);
 
-sink.read(through.through(source));
+when(onNext.apply(any())).thenReturn(false);
+
+sink.read(source);
 
 buffer.offer(2);
 
-sink.close();
+sink.close(null);
 
 // 验证
-verify(callback, times(1)).onNext(1);
-verify(callback, times(1)).onNext(2);
-verify(callback, times(2)).onWait();
-verify(callback, times(1)).onClosed();
+verify(onNext, times(1)).apply(1);
+verify(onNext, times(1)).apply(2);
+verify(onWait, times(2)).run();
+verify(onClosed, times(1)).accept(null);
 ```

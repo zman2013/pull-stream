@@ -6,31 +6,33 @@ import com.zman.pull.stream.ISource;
 import com.zman.pull.stream.bean.ReadResult;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class DefaultSink<T> implements ISink<T> {
 
     private boolean closed;
 
-    protected ISource<T> source;
+    private ISource<T> source;
 
-    private Consumer<T> onNext;
+    private Function<T, Boolean> onNext;
 
-    private Runnable onWaiting;
+    private Runnable onWait;
 
     private Consumer<Throwable> onClosed;
 
     public DefaultSink(){
-        this(d->{}, t->{});
+        this(d->true, t->{});
     }
 
 
-    public DefaultSink(Consumer<T> onNext, Consumer<Throwable> onClosed){
+    public DefaultSink(Function<T, Boolean> onNext, Consumer<Throwable> onClosed){
         this(onNext, ()->{}, onClosed);
     }
 
-    public DefaultSink(Consumer<T> onNext, Runnable onWaiting, Consumer<Throwable> onClosed){
+
+    public DefaultSink(Function<T, Boolean> onNext, Runnable onWait, Consumer<Throwable> onClosed){
         this.onNext = onNext;
-        this.onWaiting = onWaiting;
+        this.onWait = onWait;
         this.onClosed = onClosed;
     }
 
@@ -45,13 +47,13 @@ public class DefaultSink<T> implements ISink<T> {
 
             switch (readResult.status){
                 case Available:
-                    onNext.accept(readResult.data);
+                    stop = onNext.apply(readResult.data);
                     break;
-                case Waiting:
+                case Wait:
                     stop = true;
-                    onWaiting.run();
+                    onWait.run();
                     break;
-                case End:
+                case Closed:
                     onClosed.accept(readResult.throwable);
                     stop = true;
                     closed = true;
@@ -81,4 +83,47 @@ public class DefaultSink<T> implements ISink<T> {
         }
     }
 
+    /**
+     * @return the parameter source from previous {@link #read(ISource)}
+     */
+    @Override
+    public ISource<T> source() {
+        return source;
+    }
+
+    /**
+     * callback on closed
+     *
+     * @param callback callback
+     * @return self
+     */
+    @Override
+    public ISink<T> onClosed(Consumer<Throwable> callback) {
+        this.onClosed = callback;
+        return this;
+    }
+
+    /**
+     * callback on next
+     *
+     * @param callback callback
+     * @return self
+     */
+    @Override
+    public ISink<T> onNext(Function<T, Boolean> callback) {
+        this.onNext = callback;
+        return this;
+    }
+
+    /**
+     * callback on wait
+     *
+     * @param callback callback
+     * @return self
+     */
+    @Override
+    public ISink<T> onWait(Runnable callback) {
+        this.onWait = callback;
+        return this;
+    }
 }

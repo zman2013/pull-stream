@@ -7,7 +7,7 @@ public enum ReadResultEnum{
     // 读取到一条数据
     Available,
     // Source暂无数据
-    Waiting,
+    Wait,
     // Source抛出异常
-    End
+    Closed
 }

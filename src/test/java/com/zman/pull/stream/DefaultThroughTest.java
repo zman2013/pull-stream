@@ -4,12 +4,14 @@ import com.zman.pull.stream.bean.ReadResult;
 import com.zman.pull.stream.bean.ReadResultEnum;
 import com.zman.pull.stream.impl.DefaultSink;
 import com.zman.pull.stream.impl.DefaultThrough;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.mockito.Mockito.*;
 
@@ -17,11 +19,16 @@ import static org.mockito.Mockito.*;
 public class DefaultThroughTest {
 
     @Mock
-    Consumer<Integer> onNext;
+    Function<Integer,Boolean> onNext;
     @Mock
     Consumer<Throwable> onClosed;
     @Mock
     ISource<Integer> source;
+
+    @Before
+    public void before(){
+        when(onNext.apply(any())).thenReturn(false);
+    }
 
     @Test
     public void read(){
@@ -36,8 +43,8 @@ public class DefaultThroughTest {
         sink.read(through.through(source));
 
         // 验证
-        verify(onNext, times(1)).accept(10);
-        verify(onNext, times(1)).accept(20);
+        verify(onNext, times(1)).apply(10);
+        verify(onNext, times(1)).apply(20);
         verify(onClosed, times(1)).accept(null);
     }
 

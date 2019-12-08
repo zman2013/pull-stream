@@ -23,10 +23,6 @@ public class Pull {
         return intermediate;
     }
 
-    public static <T> void link(IDuplex<T> source, IDuplex<T> sink){
-        pull(source.source(), sink.sink());
-        pull(sink.source(), source.sink());
-    }
 
     /**
      * build two stream flow: source =》 duplex.sink
@@ -39,6 +35,19 @@ public class Pull {
     public static <T> void pull(ISource<T> source, IDuplex<T> duplex, ISink<T> sink){
         pull(source, duplex.sink());
         pull(duplex.source(), sink);
+    }
+
+    public static <T> void pull(IDuplex<T> a, IDuplex<T> b){
+        pull(a.source(), b.sink());
+    }
+
+    public static <T, R> void pull(IDuplex<T> source, IThrough<T, R> through, IDuplex<R> sink){
+        sink.sink().read(through.through(source.source()));
+    }
+
+    public static <T> void link(IDuplex<T> source, IDuplex<T> sink){
+        pull(source.source(), sink.sink());
+        pull(sink.source(), source.sink());
     }
 
 }

@@ -21,7 +21,7 @@ public class PullTest {
         IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
         ISource<Integer> source = new DefaultSource<>(buffer);
         IThrough<Integer, Integer> through = new DefaultThrough<>();
-        ISink<Integer> sink = new DefaultSink<>(d -> holder.value=d, t->{});
+        ISink<Integer> sink = new DefaultSink<>(d -> {holder.value=d;return true;}, t->{});
 
         pull(source, through, sink);
 
@@ -36,12 +36,12 @@ public class PullTest {
 
         IStreamBuffer<Integer> bufferA = new DefaultStreamBuffer<>();
         IDuplex<Integer> a = new DefaultDuplex<>(bufferA, t->{},
-                data->holderA.value = data, ()->{}, t->{});
+                data->{holderA.value = data;return true;}, ()->{}, t->{});
 
 
         IStreamBuffer<Integer> bufferB = new DefaultStreamBuffer<>();
         IDuplex<Integer> b = new DefaultDuplex<>(bufferB, t->{},
-                data->holderB.value = data, ()->{}, t->{});
+                data->{holderB.value = data;return true;}, ()->{}, t->{});
 
         Pull.link(a, b);
         bufferA.offer(100);
@@ -72,7 +72,7 @@ public class PullTest {
                 data->duplexHolder.value.source().push(data), t->{});
 
         duplexHolder.value = duplex;
-        DefaultSink<Integer> sink = new DefaultSink<>(d -> holder.value = d, t->{});
+        DefaultSink<Integer> sink = new DefaultSink<>(d -> {holder.value = d;return true;}, t->{});
 
         pull(source, duplex, sink);
 
