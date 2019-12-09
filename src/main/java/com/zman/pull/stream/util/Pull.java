@@ -1,9 +1,6 @@
 package com.zman.pull.stream.util;
 
-import com.zman.pull.stream.ISink;
-import com.zman.pull.stream.IDuplex;
-import com.zman.pull.stream.ISource;
-import com.zman.pull.stream.IThrough;
+import com.zman.pull.stream.*;
 
 public class Pull {
 
@@ -12,7 +9,7 @@ public class Pull {
     }
 
     public static <T> void pull(IDuplex<T> a, IDuplex<T> b){
-        pull(a.source(), b.sink());
+        pull(a.source(), b);
     }
 
     public static <T> void pull(IDuplex<T> a, ISink<T> b){
@@ -28,7 +25,7 @@ public class Pull {
     }
 
     public static <T, R> void pull(IDuplex<T> a, IThrough<T, R> through, IDuplex<R> b){
-        pull(a.source(), through, b.sink());
+        pull(a.source(), through, b);
     }
 
     public static <T, R> void pull(ISource<T> a, IThrough<T, R> through, IDuplex<R> b){
@@ -64,13 +61,38 @@ public class Pull {
         pull(duplex.source(), sink);
     }
 
-
-
-
-
     public static <T> void link(IDuplex<T> source, IDuplex<T> sink){
         pull(source.source(), sink.sink());
         pull(sink.source(), source.sink());
+    }
+
+    public static <R> ISource<R> pull(ISource source, IStream... streams){
+        if(streams.length == 0 ){
+            return (ISource<R>) source;
+        }
+
+        for(int i = 0; i < streams.length-1; i ++ ){
+            IThrough through = (IThrough) streams[i];
+            source = through.through(source);
+        }
+
+        IStream stream = streams[streams.length-1];
+        if(stream instanceof ISink){
+            ISink sink = (ISink) stream;
+            sink.read(source);
+            return null;
+        }else if(stream instanceof IDuplex){
+            IDuplex duplex = (IDuplex)stream;
+            duplex.sink().read(source);
+            return null;
+        }else{
+            IThrough through = (IThrough) stream;
+            return through.through(source);
+        }
+    }
+
+    public static <R> ISource<R> pull(IDuplex duplex, IStream... streams){
+        return pull(duplex.source(), streams);
     }
 
 }

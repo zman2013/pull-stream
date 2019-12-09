@@ -10,7 +10,7 @@ import java.util.function.Consumer;
  *
  * -- pull-stream
  */
-public interface ISource<T> {
+public interface ISource<T> extends IStream{
 
     /**
      *

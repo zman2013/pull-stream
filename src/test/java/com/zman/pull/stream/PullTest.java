@@ -15,18 +15,31 @@ import static com.zman.pull.stream.util.Pull.pull;
 public class PullTest {
 
     @Test
-    public void pullThrough(){
-        Holder<Integer> holder = new Holder<>(1);
+    public void pullDuplexThroughDuplex(){
+        Holder<Integer> holder = new Holder<>(99);
 
-        IStreamBuffer<Integer> buffer = new DefaultStreamBuffer<>();
-        ISource<Integer> source = new DefaultSource<>(buffer);
+        IDuplex<Integer> source = new DefaultDuplex<>();
+        IThrough<Integer, Integer> through = new DefaultThrough<>();
+        IDuplex<Integer> sink = new DefaultDuplex<>(d -> {holder.value=d;return true;}, t->{});
+
+        pull(source, through, sink);
+
+        // 验证
+        Assert.assertEquals(99, holder.value.intValue());
+    }
+
+    @Test
+    public void pullDuplexThroughSink(){
+        Holder<Integer> holder = new Holder<>(99);
+
+        IDuplex<Integer> source = new DefaultDuplex<>();
         IThrough<Integer, Integer> through = new DefaultThrough<>();
         ISink<Integer> sink = new DefaultSink<>(d -> {holder.value=d;return true;}, t->{});
 
         pull(source, through, sink);
 
         // 验证
-        Assert.assertEquals(1, holder.value.intValue());
+        Assert.assertEquals(99, holder.value.intValue());
     }
 
     @Test
@@ -80,5 +93,67 @@ public class PullTest {
         source.push(expectedValue);
 
         Assert.assertEquals(expectedValue, holder.value);
+    }
+
+    @Test
+    public void pullDuplexAndStreams(){
+        IDuplex<Integer> duplex = new DefaultDuplex<>();
+
+        // case1: identity
+        ISource<Integer> sourceIdentity = pull(duplex);
+        // 验证
+        Assert.assertEquals(duplex.source(), sourceIdentity);
+
+        // case2: duplex，through，through
+        Holder<Integer> holder = new Holder<>(1);
+        IThrough<Integer, Integer> through1 = new DefaultThrough<>(a->a*10);
+        IThrough<Integer, Integer> through2 = new DefaultThrough<>(a->a*10);
+
+        ISource<Integer> intermediate = pull(duplex, through1, through2);
+        ISink<Integer> sink = new DefaultSink<>(d -> {holder.value=d;return true;}, t->{});
+        duplex.push(1);
+        pull(intermediate, sink);
+        // 验证
+        Assert.assertEquals(100, holder.value.intValue());
+
+        // case3: duplex, through, through, sink
+        duplex.push(1);
+        pull(duplex, through1, through2, sink);
+        // 验证
+        Assert.assertEquals(100, holder.value.intValue());
+
+        // case4: duplex, through, through, duplex
+        IDuplex<Integer> target = new DefaultDuplex<>(d->{holder.value=d;return true;}, th->{});
+        duplex.push(1);
+        pull(duplex, through1, through2, target);
+        Assert.assertEquals(100, holder.value.intValue());
+
+    }
+
+
+    @Test
+    public void pullDuplexDuplex(){
+        Holder<Integer> holder = new Holder<>();
+        IDuplex<Integer> a = new DefaultDuplex<>();
+        IDuplex<Integer> target = new DefaultDuplex<>(d->{holder.value=d;return true;}, th->{});
+
+        a.push(99);
+
+        pull(a, target);
+
+        Assert.assertEquals(99, holder.value.intValue());
+    }
+
+    @Test
+    public void pullDuplexSink(){
+        Holder<Integer> holder = new Holder<>();
+        IDuplex<Integer> a = new DefaultDuplex<>();
+        ISink<Integer> target = new DefaultSink<>(d->{holder.value=d;return true;}, th->{});
+
+        a.push(99);
+
+        pull(a, target);
+
+        Assert.assertEquals(99, holder.value.intValue());
     }
 }

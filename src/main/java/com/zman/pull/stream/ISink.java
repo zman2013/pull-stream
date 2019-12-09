@@ -9,7 +9,7 @@ import java.util.function.Function;
  *
  * -- pull-stream
  */
-public interface ISink<T> {
+public interface ISink<T> extends IStream{
 
     /**
      * read data from source
